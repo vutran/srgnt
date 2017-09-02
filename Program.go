@@ -2,6 +2,7 @@ package srgnt
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 )
 
@@ -12,23 +13,24 @@ type Program struct {
 }
 
 func (p *Program) Run() {
-	if len(p.Args) == 1 {
+	flag.Parse()
+	cmd := flag.Arg(0)
+
+	if cmd == "" || cmd == "help" {
 		Help(p)
+	} else if val, ok := p.Commands[cmd]; ok {
+		val.Callback(flag.CommandLine)
 	} else {
-		cmd := p.Args[1]
-		if val, ok := p.Commands[cmd]; ok {
-			val.Callback()
-		} else {
-			fmt.Printf("Command \"%s\" does not exist.\n", cmd)
-		}
+		fmt.Printf("Command \"%s\" does not exist.\n", cmd)
 	}
 }
 
-func (p *Program) AddCommand(name string, callback CommandFunction, desc string) {
+func (p *Program) AddCommand(name string, callback CommandFunction, desc string) Command {
 	if len(p.Commands) == 0 {
 		p.Commands = make(map[string]Command)
 	}
 	p.Commands[name] = Command{Callback: callback, Description: desc}
+	return p.Commands[name]
 }
 
 func Help(p *Program) {
@@ -39,9 +41,12 @@ func Help(p *Program) {
 	}
 
 	help := `
-Usage: %s <command>
+Usage:
+
+	%s <command>
 
 Commands:
+
 %s
 `
 	fmt.Printf(help, p.Name, b.String())
