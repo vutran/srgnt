@@ -35,7 +35,7 @@ func Help(p *Program) {
 	var b bytes.Buffer
 
 	for k, v := range p.Commands {
-		b.WriteString(fmt.Sprintf("\t-%s\t%s\n", k, v.Description))
+		b.WriteString(fmt.Sprintf("\t%s\t%s\n", k, v.Description))
 	}
 
 	help := `
