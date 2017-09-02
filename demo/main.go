@@ -15,7 +15,7 @@ func Bar() {
 
 func main() {
 	cli := srgnt.CreateProgram("demo")
-	cli.AddCommand("foo", Foo)
-	cli.AddCommand("bar", Bar)
+	cli.AddCommand("foo", Foo, "Prints Foo")
+	cli.AddCommand("bar", Bar, "Prints Bar")
 	cli.Run()
 }

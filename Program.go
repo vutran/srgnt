@@ -24,20 +24,18 @@ func (p *Program) Run() {
 	}
 }
 
-func (p *Program) AddCommand(name string, callback CommandFunction) {
+func (p *Program) AddCommand(name string, callback CommandFunction, desc string) {
 	if len(p.Commands) == 0 {
 		p.Commands = make(map[string]Command)
 	}
-	p.Commands[name] = Command{Callback: callback}
+	p.Commands[name] = Command{Callback: callback, Description: desc}
 }
 
 func Help(p *Program) {
 	var b bytes.Buffer
 
-	for k := range p.Commands {
-		b.WriteString("\t- ")
-		b.WriteString(k)
-		b.WriteString("\n")
+	for k, v := range p.Commands {
+		b.WriteString(fmt.Sprintf("\t-%s\t%s\n", k, v.Description))
 	}
 
 	help := `

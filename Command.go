@@ -3,5 +3,6 @@ package srgnt
 type CommandFunction func()
 
 type Command struct {
-	Callback CommandFunction
+	Description string
+	Callback    CommandFunction
 }
