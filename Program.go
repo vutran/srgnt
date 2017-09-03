@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io"
 )
 
 type Program struct {
@@ -12,17 +13,27 @@ type Program struct {
 	Commands map[string]Command
 }
 
-func (p *Program) Run() {
+func (p *Program) Run(done chan bool) {
 	flag.Parse()
 	cmd := flag.Arg(0)
 
+	var b bytes.Buffer
+	var r io.Reader
+	var d bool
+
 	if cmd == "" || cmd == "help" {
-		Help(p)
+		r = Help(p)
 	} else if val, ok := p.Commands[cmd]; ok {
-		val.Callback(flag.CommandLine)
+		r = val.Callback(flag.CommandLine)
 	} else {
-		fmt.Printf("Command \"%s\" does not exist.\n", cmd)
+		fmt.Fprintf(&b, "Command \"%s\" does not exist.\n", cmd)
 	}
+
+	b.ReadFrom(r)
+
+	fmt.Printf(b.String())
+
+	done <- d
 }
 
 func (p *Program) AddCommand(name string, callback CommandFunction, desc string) Command {
@@ -33,11 +44,11 @@ func (p *Program) AddCommand(name string, callback CommandFunction, desc string)
 	return p.Commands[name]
 }
 
-func Help(p *Program) {
-	var b bytes.Buffer
+func Help(p *Program) io.Reader {
+	var ret, b bytes.Buffer
 
 	for k, v := range p.Commands {
-		b.WriteString(fmt.Sprintf("\t%s\t%s\n", k, v.Description))
+		fmt.Fprintf(&b, "\t%s\t%s\n", k, v.Description)
 	}
 
 	help := `
@@ -49,5 +60,7 @@ Commands:
 
 %s
 `
-	fmt.Printf(help, p.Name, b.String())
+	fmt.Fprintf(&ret, help, p.Name, b.Bytes())
+
+	return &ret
 }
