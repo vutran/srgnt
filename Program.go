@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"github.com/fatih/color"
 	"io"
 )
 
@@ -26,10 +27,12 @@ func (p *Program) Run(done chan bool) {
 	} else if val, ok := p.Commands[cmd]; ok {
 		r = val.Callback(flag.CommandLine)
 	} else {
-		fmt.Fprintf(&b, "Command \"%s\" does not exist.\n", cmd)
+		fmt.Fprintf(&b, color.RedString("Command \"%s\" does not exist.\n"), cmd)
 	}
 
-	b.ReadFrom(r)
+	if r != nil {
+		b.ReadFrom(r)
+	}
 
 	fmt.Printf(b.String())
 
@@ -51,16 +54,11 @@ func Help(p *Program) io.Reader {
 		fmt.Fprintf(&b, "\t%s\t%s\n", k, v.Description)
 	}
 
-	help := `
-Usage:
-
-	%s <command>
-
-Commands:
-
-%s
-`
-	fmt.Fprintf(&ret, help, p.Name, b.Bytes())
+	fmt.Fprintf(&ret, color.YellowString("Usage:\n"))
+	fmt.Fprintf(&ret, "\n")
+	fmt.Fprintf(&ret, "\t%s <command>\n\n", color.CyanString(p.Name))
+	fmt.Fprintf(&ret, color.YellowString("Commands:\n\n"))
+	fmt.Fprintf(&ret, "%s", b.Bytes())
 
 	return &ret
 }
