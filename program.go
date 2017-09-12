@@ -68,7 +68,7 @@ func Help(p *Program) io.Reader {
 
 	fmt.Fprintf(&ret, color.YellowString("Usage:\n"))
 	fmt.Fprintf(&ret, "\n")
-	fmt.Fprintf(&ret, "\t%s <command>\n\n", color.CyanString(p.Name))
+	fmt.Fprintf(&ret, "\t%s [flags] <command>\n\n", color.CyanString(p.Name))
 	fmt.Fprintf(&ret, color.YellowString("Commands:\n\n"))
 	fmt.Fprintf(&ret, "%s", b.Bytes())
 
