@@ -47,6 +47,18 @@ func (p *Program) AddCommand(name string, callback CommandFunction, desc string)
 	return p.Commands[name]
 }
 
+func (p *Program) AddBoolFlag(name string, value bool, usage string) {
+	flag.Bool(name, value, usage)
+}
+
+func (p *Program) AddIntFlag(name string, value int, usage string) {
+	flag.Int(name, value, usage)
+}
+
+func (p *Program) AddStringFlag(name string, value string, usage string) {
+	flag.String(name, value, usage)
+}
+
 func Help(p *Program) io.Reader {
 	var ret, b bytes.Buffer
 

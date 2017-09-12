@@ -23,8 +23,8 @@ func main() {
 
 	cli := srgnt.CreateProgram("foo")
 
-	foo := cli.AddCommand("hello", Hello, "Prints \"Hello, <name>!\"")
-	foo.AddStringFlag("name", "", "Set a name")
+	cli.AddCommand("hello", Hello, "Prints \"Hello, <name>!\"")
+	cli.AddStringFlag("name", "", "Set a name")
 
 	cli.Run(done)
 
