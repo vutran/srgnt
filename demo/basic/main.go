@@ -1,10 +1,3 @@
-# srgnt
-
-> Experimental CLI Framework
-
-## Usage
-
-```
 package main
 
 import (
@@ -34,8 +27,3 @@ func main() {
 
 	<-done
 }
-```
-
-## License
-
-MIT © [Vu Tran](https://github.com/vutran/srgnt)
