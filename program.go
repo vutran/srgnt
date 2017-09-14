@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/fatih/color"
-	"io"
 )
 
 type Program struct {
@@ -14,29 +13,17 @@ type Program struct {
 	Commands map[string]Command
 }
 
-func (p *Program) Run(done chan bool) {
+func (p *Program) Run() {
 	flag.Parse()
 	cmd := flag.Arg(0)
 
-	var b bytes.Buffer
-	var r io.Reader
-	var d bool
-
 	if cmd == "" || cmd == "help" {
-		r = Help(p)
+		Help(p)
 	} else if val, ok := p.Commands[cmd]; ok {
-		r = val.Callback(flag.CommandLine)
+		val.Callback(flag.CommandLine)
 	} else {
-		fmt.Fprintf(&b, color.RedString("Command \"%s\" does not exist.\n"), cmd)
+		fmt.Printf(color.RedString("Command \"%s\" does not exist.\n"), cmd)
 	}
-
-	if r != nil {
-		b.ReadFrom(r)
-	}
-
-	fmt.Printf(b.String())
-
-	done <- d
 }
 
 func (p *Program) AddCommand(name string, callback CommandFunction, desc string) Command {
@@ -59,18 +46,16 @@ func (p *Program) AddStringFlag(name string, value string, usage string) {
 	flag.String(name, value, usage)
 }
 
-func Help(p *Program) io.Reader {
-	var ret, b bytes.Buffer
+func Help(p *Program) {
+	var b bytes.Buffer
 
 	for k, v := range p.Commands {
 		fmt.Fprintf(&b, "\t%s\t%s\n", k, v.Description)
 	}
 
-	fmt.Fprintf(&ret, color.YellowString("Usage:\n"))
-	fmt.Fprintf(&ret, "\n")
-	fmt.Fprintf(&ret, "\t%s [flags] <command>\n\n", color.CyanString(p.Name))
-	fmt.Fprintf(&ret, color.YellowString("Commands:\n\n"))
-	fmt.Fprintf(&ret, "%s", b.Bytes())
-
-	return &ret
+	fmt.Println(color.YellowString("Usage:"))
+	fmt.Println("")
+	fmt.Printf("\t%s [flags] <command>\n\n", color.CyanString(p.Name))
+	fmt.Println(color.YellowString("Commands:\n"))
+	fmt.Println(b.String())
 }
