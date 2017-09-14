@@ -1,6 +1,6 @@
 # srgnt
 
-> Experimental CLI Framework
+> Simple command-line framework for Go Edit
 
 ## Install
 
