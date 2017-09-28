@@ -1,6 +1,6 @@
 # srgnt
 
-> Simple command-line framework for Go Edit
+> Simple command-line framework for Go
 
 ## Install
 
