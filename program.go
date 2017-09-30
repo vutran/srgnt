@@ -3,7 +3,7 @@ package srgnt
 import (
 	"flag"
 	"fmt"
-	"github.com/fatih/color"
+	"github.com/vutran/ansi/colors"
 )
 
 type Program struct {
@@ -21,7 +21,7 @@ func (p *Program) Run() {
 	} else if val, ok := p.Commands[cmd]; ok {
 		val.Callback(flag.CommandLine)
 	} else {
-		fmt.Printf(color.RedString("Command \"%s\" does not exist.\n"), cmd)
+		fmt.Printf(colors.Red("Command \"%s\" does not exist.\n"), cmd)
 	}
 }
 
